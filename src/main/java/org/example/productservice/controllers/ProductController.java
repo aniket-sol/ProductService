@@ -25,8 +25,15 @@ public class ProductController {
     }
 
     @PostMapping("/products")
-    public Product createProduct(@RequestBody CreateProductRequestDto createProductRequestDto){
-        return productService.createProduct(createProductRequestDto);
+    public Product createProduct(@RequestBody CreateProductRequestDto createProductRequest){
+//        return productService.createProduct(createProductRequestDto);
+        return productService.createProduct(
+                createProductRequest.getTitle(),
+                createProductRequest.getDescription(),
+                createProductRequest.getCategory(),
+                createProductRequest.getImage(),
+                createProductRequest.getPrice()
+        );
     }
 
 }
