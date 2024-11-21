@@ -28,7 +28,7 @@ public class FakeStoreProductService implements ProductService {
     }
 
     @Override
-    public Product getProductById(long id) throws ProductNotFoundException{
+    public Product getProductById(long id) throws ProductNotFoundException {
 //      call external fakestore api
         FakeStoreProductDto fakeStoreProduct = restTemplate.getForObject("https://fakestoreapi.com/products/" + id, FakeStoreProductDto.class);
         if(fakeStoreProduct == null) {
