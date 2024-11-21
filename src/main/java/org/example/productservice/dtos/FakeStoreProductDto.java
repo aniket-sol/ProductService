@@ -26,7 +26,7 @@ public class FakeStoreProductDto {
         Category category1 = new Category();
         category1.setName(category);
 
-        product.setCategory(category1);
+//        product.setCategory(category1);
         return product;
     }
 }
