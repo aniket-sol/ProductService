@@ -2,6 +2,7 @@ package org.example.productservice.services;
 
 import org.example.productservice.dtos.CreateProductRequestDto;
 import org.example.productservice.dtos.FakeStoreProductDto;
+import org.example.productservice.exceptions.ProductNotFoundException;
 import org.example.productservice.models.Product;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -16,20 +17,23 @@ public class FakeStoreProductService implements ProductService {
         this.restTemplate = restTemplate;
     }
     @Override
-    public List<Product> getAllProducts() {
+    public List<Product> getAllProducts(int limit) {
         FakeStoreProductDto[] fakeStoreProducts = restTemplate.getForObject("https://fakestoreapi.com/products", FakeStoreProductDto[].class);
         List<Product> products = new ArrayList<>();
         for (FakeStoreProductDto fakeStoreProduct : fakeStoreProducts) {
             Product product = fakeStoreProduct.toProduct();
             products.add(product);
         }
-        return products;
+        return products.size() > limit ? products.subList(0, limit) : products;
     }
 
     @Override
-    public Product getProductById(long id) {
+    public Product getProductById(long id) throws ProductNotFoundException{
 //      call external fakestore api
         FakeStoreProductDto fakeStoreProduct = restTemplate.getForObject("https://fakestoreapi.com/products/" + id, FakeStoreProductDto.class);
+        if(fakeStoreProduct == null) {
+            throw new ProductNotFoundException("Product with id " + id + " is not available");
+        }
         return fakeStoreProduct.toProduct();
     }
     public Product createProduct(String title, String description, String category, String image, double price){
