@@ -5,6 +5,7 @@ import org.example.productservice.dtos.ErrorDto;
 import org.example.productservice.exceptions.ProductNotFoundException;
 import org.example.productservice.models.Product;
 import org.example.productservice.services.ProductService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +16,7 @@ import java.util.List;
 @RestController
 public class ProductController {
     private final ProductService productService;
-    public ProductController(ProductService productService) {
+    public ProductController(@Qualifier("SelfProductService") ProductService productService) {
         this.productService = productService;
     }
     //    at the end of the day, API = method in my controller

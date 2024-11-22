@@ -10,7 +10,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
+@Service("FakeStoreProductService")
 public class FakeStoreProductService implements ProductService {
     private final RestTemplate restTemplate; //using this, will be able to call 3rd party apis
     public FakeStoreProductService(RestTemplate restTemplate) {
