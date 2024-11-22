@@ -20,9 +20,11 @@ public class FakeStoreProductService implements ProductService {
     public List<Product> getAllProducts(int limit) {
         FakeStoreProductDto[] fakeStoreProducts = restTemplate.getForObject("https://fakestoreapi.com/products", FakeStoreProductDto[].class);
         List<Product> products = new ArrayList<>();
-        for (FakeStoreProductDto fakeStoreProduct : fakeStoreProducts) {
-            Product product = fakeStoreProduct.toProduct();
-            products.add(product);
+
+        if (fakeStoreProducts == null) throw new AssertionError();
+
+        for (FakeStoreProductDto dto : fakeStoreProducts) {
+            products.add(dto.toProduct());
         }
         return products.size() > limit ? products.subList(0, limit) : products;
     }
