@@ -3,10 +3,12 @@ package org.example.productservice.services;
 import org.example.productservice.exceptions.ProductNotFoundException;
 import org.example.productservice.models.Category;
 import org.example.productservice.models.Product;
+import org.example.productservice.projections.ProductProjection;
 import org.example.productservice.repositories.CategoryRepository;
 import org.example.productservice.repositories.ProductRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service("SelfProductService")
@@ -20,12 +22,25 @@ public class SelfProductService implements ProductService {
 
     @Override
     public List<Product> getAllProducts(int limit) {
-        return List.of();
+        List<Product> products = productRepository.findAll();
+//        List<ProductProjection> products_1 = productRepository.getTitleAndIdOfAllProductsWithCategoryName("Electronics");
+//        System.out.println(products_1.get(0).getTitle());
+//        System.out.println(products_1.get(0).getId());
+//        System.out.println(products_1.get(1).getId());
+//        System.out.println(products_1.get(1).getTitle());
+//        System.out.println(products_1.get(0).getName());
+//        System.out.println(products_1.get(0).getName());
+//        System.out.println(products.size());
+        return products;
     }
 
     @Override
     public Product getProductById(long id) throws ProductNotFoundException {
-        return null;
+        Product product = productRepository.findById(id);
+        if(product == null) {
+            throw new ProductNotFoundException("Product with id " + id + " not found");
+        }
+        return product;
     }
 
     @Override
