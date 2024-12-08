@@ -6,6 +6,7 @@ import org.example.productservice.models.Product;
 import org.example.productservice.projections.ProductProjection;
 import org.example.productservice.repositories.CategoryRepository;
 import org.example.productservice.repositories.ProductRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -13,8 +14,8 @@ import java.util.List;
 
 @Service("SelfProductService")
 public class SelfProductService implements ProductService {
-    private CategoryRepository categoryRepository;
-    private ProductRepository productRepository;
+    private final CategoryRepository categoryRepository;
+    private final ProductRepository productRepository;
     public SelfProductService(CategoryRepository categoryRepository, ProductRepository productRepository) {
         this.categoryRepository = categoryRepository;
         this.productRepository = productRepository;

@@ -16,7 +16,7 @@ import java.util.List;
 @RestController
 public class ProductController {
     private final ProductService productService;
-    public ProductController(@Qualifier("SelfProductService") ProductService productService) {
+    public ProductController(@Qualifier("FakeStoreProductService") ProductService productService) {
         this.productService = productService;
     }
     //    at the end of the day, API = method in my controller

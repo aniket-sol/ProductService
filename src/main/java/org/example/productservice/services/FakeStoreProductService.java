@@ -4,6 +4,7 @@ import org.example.productservice.dtos.CreateProductRequestDto;
 import org.example.productservice.dtos.FakeStoreProductDto;
 import org.example.productservice.exceptions.ProductNotFoundException;
 import org.example.productservice.models.Product;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -12,9 +13,11 @@ import java.util.List;
 
 @Service("FakeStoreProductService")
 public class FakeStoreProductService implements ProductService {
+    private final RedisTemplate<String, Object> productRedisTemplate;
     private final RestTemplate restTemplate; //using this, will be able to call 3rd party apis
-    public FakeStoreProductService(RestTemplate restTemplate) {
+    public FakeStoreProductService(RedisTemplate<String, Object> productRedisTemplate, RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
+        this.productRedisTemplate = productRedisTemplate;
     }
     @Override
     public List<Product> getAllProducts(int limit) {
@@ -31,12 +34,23 @@ public class FakeStoreProductService implements ProductService {
 
     @Override
     public Product getProductById(long id) throws ProductNotFoundException {
+
+        //check for data in cache
+        Product product = (Product) productRedisTemplate.opsForHash().get("PRODUCTS", "product_" + id);
+        if (product != null) {
+            //cache hit
+            return product;
+        }
+
+
 //      call external fakestore api
         FakeStoreProductDto fakeStoreProduct = restTemplate.getForObject("https://fakestoreapi.com/products/" + id, FakeStoreProductDto.class);
         if(fakeStoreProduct == null) {
             throw new ProductNotFoundException("Product with id " + id + " is not available");
         }
-        return fakeStoreProduct.toProduct();
+        product = fakeStoreProduct.toProduct();
+        productRedisTemplate.opsForHash().put("PRODUCTS", "product_" + id, product);
+        return product;
     }
     public Product createProduct(String title, String description, String category, String image, double price){
         FakeStoreProductDto fakeStoreProduct = new FakeStoreProductDto();
